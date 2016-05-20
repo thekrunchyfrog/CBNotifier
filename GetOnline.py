@@ -1,5 +1,6 @@
 import mechanize
 import cookielib
+import json
 from bs4 import BeautifulSoup
 
 # Browser
@@ -21,8 +22,8 @@ br.addheaders = [('User-agent', 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.
 r = br.open('https://chaturbate.com/auth/login/')
 
 br.form = list(br.forms())[0]
-br["username"] = ""
-br["password"] = ""
+br["username"] = "uberduber"
+br["password"] = "Beaner123"
 
 response = br.submit()
 
@@ -31,7 +32,15 @@ r = br.open('https://chaturbate.com/followed-cams/')
 soup = BeautifulSoup(r.read(), 'html.parser')
 response = soup.find_all('li', class_='cams')
 
+online = []
+
 for res in response:
-        if res.text != "offline":
-            print res.parent.parent.parent.img.get('alt', '')
-            print res.parent.parent.parent.img
+    if res.text != "offline":
+        name = res.parent.parent.parent.img.get('alt', '')[:-12]
+        thumbnail = res.parent.parent.parent.img.get('src')
+        girl = {'name': name, 'thumbnail': thumbnail}
+        online.append(girl)
+
+followed_cams = {'online': online}
+
+print(json.dumps(followed_cams))
