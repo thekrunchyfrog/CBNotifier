@@ -1,24 +1,28 @@
 from flask import Flask
 from flask import request
+from flask import jsonify
+from flask import Response
 from GetOnlineModels import GetOnlineModels
-import json
 
 app = Flask(__name__)
 
 
-@app.route('/echo', methods=['POST'])
+@app.route('/models/followed/online', methods=['POST'])
 def api_echo():
 
     if request.headers['Content-Type'] == 'application/json':
         username = request.json['username']
         password = request.json['password']
-        print username + ' ' + password
-        x = GetOnlineModels()
-        y = x.myModels(username, password)
-        return json.dumps(y)
+        resp = jsonify(GetOnlineModels().myModels(username, password))
+        resp.status_code = 201
+        resp.headers['server'] = ""
+        return resp
 
     else:
-        return "415 Unsupported Media Type"
+        resp = Response("Try Again :-(", status=200, mimetype='text/plain')
+        resp.status_code = 415
+        resp.headers['server'] = ""
+        return resp
 
 
 if __name__ == '__main__':
