@@ -5,6 +5,10 @@ from bs4 import BeautifulSoup
 
 class GetOnlineModels:
 
+    baseURL = "https://chaturbate.com"
+    loginURL = baseURL + "/auth/login/"
+    followedCamsURL = baseURL + "/followed-cams/"
+
     def myModels(self, username, password):
         # Browser
         br = mechanize.Browser()
@@ -22,7 +26,7 @@ class GetOnlineModels:
         br.set_handle_refresh(mechanize._http.HTTPRefreshProcessor(), max_time=1)
         br.addheaders = [('User-agent', 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.1) Gecko/2008071615 Fedora/3.0.1-1.fc9 Firefox/3.0.1')]
 
-        r = br.open('https://chaturbate.com/auth/login/')
+        r = br.open(self.loginURL)
 
         br.form = list(br.forms())[0]
         br["username"] = username
@@ -30,7 +34,7 @@ class GetOnlineModels:
 
         response = br.submit()
 
-        r = br.open('https://chaturbate.com/followed-cams/')
+        r = br.open(self.followedCamsURL)
 
         soup = BeautifulSoup(r.read(), 'html.parser')
         response = soup.find_all('li', class_='cams')
@@ -40,9 +44,13 @@ class GetOnlineModels:
         for res in response:
             if res.text != "offline":
                 name = res.parent.parent.parent.img.get('alt', '')[:-12]
+                modelURL = self.baseURL + "/" + name
                 thumbnail = res.parent.parent.parent.img.get('src')
-                girl = {'name': name, 'thumbnail': thumbnail}
+                timeOnline = res.text[:res.text.find(",")]
+                girl = {'name': name, 'timeOnline': timeOnline, 'url': modelURL, 'thumbnail': thumbnail}
                 online.append(girl)
+            else:
+                break
 
         followed_cams = {'online': online}
 
