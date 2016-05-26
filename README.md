@@ -9,13 +9,16 @@ POST: /modes/followed/online
 
 Request Example:
 
-'''json
-{"username": "user", "password": "password"}
-'''
+```json
+{
+  "username": "user",
+  "password": "password"
+}
+```
 
 Response Example: 
 
-'''json
+```json
 {
   "online": [
     {
@@ -32,5 +35,5 @@ Response Example:
     }
   ]
 }
-'''
+```
 
