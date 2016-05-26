@@ -8,12 +8,14 @@ It's using flask to run a service and mechanize and beautifulsoup4 behind the sc
 POST: /modes/followed/online
 
 Request Example:
-''''json
+
+'''json
 {"username": "user", "password": "password"}
 '''
 
 Response Example: 
-''''json
+
+'''json
 {
   "online": [
     {
@@ -30,5 +32,5 @@ Response Example:
     }
   ]
 }
-''''
+'''
 
