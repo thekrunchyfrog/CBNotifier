@@ -40,5 +40,14 @@ def api_ModelsFollowed():
         resp.headers['server'] = ""
         return resp
 
+
+@app.route('/models/featured', methods=["GET"])
+def api_ModelsFeatured():
+
+    resp = jsonify(GatherData().getFeatured())
+    resp.status_code = 201
+    resp.headers['server'] = ""
+    return resp
+
 if __name__ == '__main__':
     app.run()

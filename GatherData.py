@@ -102,10 +102,53 @@ class GatherData:
                 girl = {'name': name, 'timeOnline': timeOnline, 'url': modelURL, 'thumbnail': thumbnail}
                 followed.append(girl)
 
-        print len(followed)
         followed_cams = {'followed': followed}
 
         return followed_cams
+
+    def getFeatured(self):
+
+        br = self.br
+
+        featured = []
+
+        r = br.open(self.baseURL)
+        soup = BeautifulSoup(r.read(), 'html.parser')
+
+        pageCount = self.getPageCount(soup)
+
+        for page in range(1, pageCount + 1):
+            r = br.open(self.followedCamsURL + "/?page=" + str(page))
+
+            soup = BeautifulSoup(r.read(), 'html.parser')
+            response = soup.find_all('li', class_='cams')
+
+            for res in response:
+                name = res.parent.parent.parent.img.get('alt', '')[:-12]
+                modelURL = self.baseURL + "/" + name
+                thumbnail = res.parent.parent.parent.img.get('src')
+                timeOnline = res.text[:res.text.find(",")]
+                if res.text == "offline":
+                    timeOnline = "offline"
+                girl = {'name': name, 'timeOnline': timeOnline, 'url': modelURL, 'thumbnail': thumbnail}
+                featured.append(girl)
+
+        print len(featured)
+        featured_cams = {'featured': featured}
+
+        return featured_cams
+
+    def getModelInfo(self, modelName):
+
+        br = self.br
+
+        modelURL = self.baseURL + "/" + modelName
+
+        r = br.open(modelURL)
+        soup = BeautifulSoup(r.read(), 'html.parser')
+
+        response = soup.select('div.bio dd', limit=12)
+        print response
 
     def getPageCount(self, soupObj):
 
@@ -117,3 +160,5 @@ class GatherData:
                 pages.append(int(res.text))
 
         return max(pages)
+
+print GatherData().getModelInfo('cathieb')
