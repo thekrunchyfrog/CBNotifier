@@ -41,6 +41,22 @@ def api_ModelsFollowed():
         return resp
 
 
+@app.route('/models/info', methods=["POST"])
+def api_ModelsInfo():
+
+    if request.headers['Content-Type'] == 'application/json':
+        modelName = request.json['modelName']
+        resp = jsonify(GatherData().getModelInfo(modelName))
+        resp.status_code = 201
+        resp.headers['server'] = ""
+        return resp
+
+    else:
+        resp = Response("Try Again :-(", status=415, mimetype='text/plain')
+        resp.headers['server'] = ""
+        return resp
+
+
 @app.route('/models/featured', methods=["GET"])
 def api_ModelsFeatured():
 
@@ -49,5 +65,7 @@ def api_ModelsFeatured():
     resp.headers['server'] = ""
     return resp
 
+
 if __name__ == '__main__':
+    app.debug = True
     app.run()
