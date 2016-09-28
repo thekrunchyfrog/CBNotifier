@@ -166,11 +166,24 @@ class GatherData:
         r = br.open(modelURL)
         soup = BeautifulSoup(r.read(), 'html.parser')
 
-        response = soup.select('div.bio dd', limit=12)
+        bioKeys = soup.select('div.bio dt', limit=12)
+        bioValues = soup.select('div.bio dd', limit=12)
 
         r.close()
 
-        print response
+        info = {}
+
+        i = 0
+        for bioKey in bioKeys:
+            if self.elementToFormattedString(bioKey, 4) == "Followers:":
+                x = 5
+            else:
+                x = 4
+
+            info[self.elementToFormattedString(bioKey, 4)[:-1]] = self.elementToFormattedString(bioValues[i], x)
+            i += 1
+
+        return info
 
     def getPageCount(self, soupObj):
 
@@ -182,3 +195,6 @@ class GatherData:
                 pages.append(int(res.text))
 
         return max(pages)
+
+    def elementToFormattedString(self, element, tagSize):
+        return str(element)[tagSize:- (tagSize + 1)]
